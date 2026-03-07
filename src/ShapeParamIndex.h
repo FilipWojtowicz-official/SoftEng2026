@@ -9,6 +9,7 @@ enum ShapeParamIndex {
   PARAM_DIAGONAL,
   PARAM_DEPTH,
   PARAM_ANGLE,
-  PARAM_DIAGONAL_2
+  PARAM_DIAGONAL_2,
+  PARAM_RADIUS_2
 };
 #endif

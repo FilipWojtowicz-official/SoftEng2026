@@ -26,8 +26,7 @@ inline ShapeResultData<T> Torus<T>::compute() {
     ShapeResultData<T> result;
 
     T R = this->m_param.get(PARAM_RADIUS);
-    // using 'PARAM_WIDTH' as radius_2; consider adding 'PARAM_RADIUS_2' to the enum
-    T r = this->m_param.get(PARAM_WIDTH);
+    T r = this->m_param.get(PARAM_RADIUS_2);
 
     const T PI = static_cast<T>(numbers::pi);
 
@@ -43,7 +42,7 @@ inline ShapeResultData<T> Torus<T>::compute() {
 template<class T>
 inline string Torus<T>::print() {
     T R = this->m_param.get(PARAM_RADIUS);
-    T r = this->m_param.get(PARAM_WIDTH);
+    T r = this->m_param.get(PARAM_RADIUS_2);
 
     return "Torus(R=" + to_string(R) + ", r=" + to_string(r) + ")";
 }
