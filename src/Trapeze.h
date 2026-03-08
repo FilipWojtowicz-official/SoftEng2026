@@ -41,9 +41,8 @@ inline string Trapeze<T>::print() {
     T b = this->m_param.get_attrib(PARAM_DEPTH);
     T h = this->m_param.get_attrib(PARAM_HEIGHT);
 
-    return "Trapeze(width=" + to_string(a) +
-           ", depth=" + to_string(b) +
-           ", height=" + to_string(h) + ")";
+    return "Trapeze(width=" + to_string(a) + ", depth=" + to_string(b)
+        + ", height=" + to_string(h) + ")";
 }
 
 template<class T>
