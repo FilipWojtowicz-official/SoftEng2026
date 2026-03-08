@@ -13,17 +13,18 @@ using namespace std;
 template<class T>
 class Cone : public Shape3D<T> {
   public:
-    inline virtual ShapeResultData<T> compute();
+    inline virtual ShapeResult<T> compute();
+
     inline string print();
     inline Cone(const ShapeParam<T> & param);
 };
 
 template<class T>
-inline ShapeResultData<T> Cone<T>::compute() {
-    ShapeResultData<T> res;
+inline ShapeResult<T> Cone<T>::compute() {
+    ShapeResult<T> res;
     
-    T r = this->m_param.get(PARAM_RADIUS); 
-    T h = this->m_param.get(PARAM_HEIGHT);
+    T r = this->m_param.get_attrib(PARAM_RADIUS); 
+    T h = this->m_param.get_attrib(PARAM_HEIGHT);
     T pi = static_cast<T>(3.141592653589793);
 
     // Tworząca stożka l = sqrt(r^2 + h^2)
@@ -32,16 +33,16 @@ inline ShapeResultData<T> Cone<T>::compute() {
     T volume = (static_cast<T>(1.0) / 3.0) * pi * r * r * h;
     T surfaceArea = pi * r * (r + l);
 
-    res.set(RESULT_VOLUME, volume);
-    res.set(RESULT_SURFACE, surfaceArea);
+    res.set_attrib(RESULT_VOLUME, volume);
+    res.set_attrib(RESULT_SURFACE, surfaceArea);
 
     return res;
 }
 
 template<class T>
 inline string Cone<T>::print() {
-    return "Cone (Stożek) - R: " + to_string(this->m_param.get(PARAM_RADIUS)) + 
-           ", H: " + to_string(this->m_param.get(PARAM_HEIGHT));
+    return "Cone (Stożek) - R: " + to_string(this->m_param.get_attrib(PARAM_RADIUS)) + 
+           ", H: " + to_string(this->m_param.get_attrib(PARAM_HEIGHT));
 }
 
 template<class T>

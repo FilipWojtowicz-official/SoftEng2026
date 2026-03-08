@@ -11,7 +11,7 @@ using namespace std;
 template<class T>
 class Rhombus : public Shape2D<T> {
   public:
-    inline ShapeResultData<T> compute();
+    inline ShapeResult<T> compute();
 
     inline string print();
 
@@ -19,8 +19,8 @@ class Rhombus : public Shape2D<T> {
 
 };
 template<class T>
-inline ShapeResultData<T> Rhombus<T>::compute() {
-  return ShapeResultData<T>();
+inline ShapeResult<T> Rhombus<T>::compute() {
+  return ShapeResult<T>();
 }
 
 template<class T>
