@@ -10,12 +10,12 @@ using namespace std;
 template<class T>
 class IShape {
   public:
-    virtual ShapeResultData<T> compute() = 0;
+    virtual ShapeResult<T> compute() = 0;
 
     virtual string print() = 0;
 
 
-  private:
+  protected:
     ShapeParam<T> m_param;
 
 

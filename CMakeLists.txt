@@ -43,5 +43,5 @@ target_include_directories(test_shape1 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src  P
 #target_link_libraries(test_shape2 gtest gtest_main ShapeLib)
 #target_include_directories(test_shape2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src  PRIVATE ${PROJECT_BINARY_DIR})
 
-#add_test(NAME test_shape1 COMMAND test_shape1)
+add_test(NAME test_shape1 COMMAND test_shape1)
 #add_test(NAME test_shape2 COMMAND test_shape2)

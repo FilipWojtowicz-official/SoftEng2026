@@ -11,7 +11,7 @@ using namespace std;
 template<class T>
 class Trapeze : public Shape2D<T> {
   public:
-    inline virtual ShapeResultData<T> compute();
+    inline virtual ShapeResult<T> compute();
 
     inline string print();
 
@@ -19,13 +19,30 @@ class Trapeze : public Shape2D<T> {
 
 };
 template<class T>
-inline ShapeResultData<T> Trapeze<T>::compute() {
-  return ShapeResultData<T>();
+inline ShapeResult<T> Trapeze<T>::compute() {
+
+    ShapeResult<T> result;
+
+    T a = this->m_param.get_attrib(PARAM_WIDTH);
+    T b = this->m_param.get_attrib(PARAM_DEPTH);
+    T h = this->m_param.get_attrib(PARAM_HEIGHT);
+
+    T area = (a + b) * h / 2;
+
+    result.set_attrib(RESULT_AREA, area);
+
+    return result;
 }
 
 template<class T>
 inline string Trapeze<T>::print() {
-  return "";
+
+    T a = this->m_param.get_attrib(PARAM_WIDTH);
+    T b = this->m_param.get_attrib(PARAM_DEPTH);
+    T h = this->m_param.get_attrib(PARAM_HEIGHT);
+
+    return "Trapeze(width=" + to_string(a) + ", depth=" + to_string(b)
+        + ", height=" + to_string(h) + ")";
 }
 
 template<class T>
