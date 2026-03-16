@@ -1,11 +1,10 @@
 #ifndef _RHOMBUS_H
 #define _RHOMBUS_H
 
-
+using namespace std;
 #include "Shape2D.h"
 #include "ShapeResultData.h"
 #include <string>
-using namespace std;
 #include "ShapeParam.h"
 #include "ShapeParamIndex.h"
 #include "ShapeResultIndex.h"
@@ -25,9 +24,15 @@ inline ShapeResult<T> Rhombus<T>::compute() {
     T d1 = this->m_param.get_attrib(ShapeParamIndex::PARAM_DIAGONAL);
     T d2 = this->m_param.get_attrib(ShapeParamIndex::PARAM_DIAGONAL_2);
 
+    if (d1 <= 0 || d2 <= 0) {
+        ShapeResult<T> res;
+        res.set_attrib(RESULT_AREA, 0.f);
+        return res;
+    }
+
     ShapeResult<T> res;
     res.set_attrib(ShapeResultIndex::RESULT_AREA, (d1 * d2) / 2);
-    return ShapeResult<T>();
+    return res;
 }
 
 template<class T>
