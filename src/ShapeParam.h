@@ -16,19 +16,23 @@ class ShapeParam {
   public:
     ShapeType type;
 
-    inline T get(ShapeParamIndex ind) const;
+    inline T get_attrib(ShapeParamIndex ind) const;
 
-    inline bool set(ShapeParamIndex ind, const T & val);
+    inline bool set_attrib(ShapeParamIndex ind, const T & val);
 
     inline bool validate() const;
 
 };
 template<class T>
-inline T ShapeParam<T>::get(ShapeParamIndex ind) const {
+inline T ShapeParam<T>::get_attrib(ShapeParamIndex ind) const {
+    if(ind<attribs.size()) return attribs[ind];
+    return 0;
 }
 
 template<class T>
-inline bool ShapeParam<T>::set(ShapeParamIndex ind, const T & val) {
+inline bool ShapeParam<T>::set_attrib(ShapeParamIndex ind, const T & val) {
+  if(ind>=attribs.size())attribs.resize(ind+1);
+  attribs[ind]=val;
   return true;
 }
 

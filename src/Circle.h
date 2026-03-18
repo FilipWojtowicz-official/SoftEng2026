@@ -37,11 +37,12 @@ inline ShapeResultData<T> Circle<T>::compute() {
     return result;
 }
 
-template<class T>
-inline std::string Circle<T>::print() {
+template <class T> inline std::string Circle<T>::print()
+{
     T radius = this->m_param.get_attrib(PARAM_RADIUS);
-    ShapeResultData<T> result = compute();
+    ShapeResult<T> result = compute();
 
+    // Uzycie ostringstream do zbudowania wieloliniowego tekstu
     std::ostringstream out;
     out << "=== FIGURA: KOLO ===" << std::endl;
     out << "Promien: " << radius << std::endl;
@@ -52,8 +53,8 @@ inline std::string Circle<T>::print() {
     return out.str();
 }
 
-template<class T>
-inline Circle<T>::Circle(const ShapeParam<T>& param) : Shape2D<T>(param) {
-}
+template <class T>
+inline Circle<T>::Circle(const ShapeParam<T>& param): Shape2D<T>(param)
+{}
 
-#endif
+#endif // CIRCLE_H_

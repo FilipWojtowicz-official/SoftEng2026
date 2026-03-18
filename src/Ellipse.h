@@ -11,7 +11,7 @@ using namespace std;
 template<class T>
 class Ellipse : public Shape2D<T> {
   public:
-    inline ShapeResultData<T> compute();
+    inline ShapeResult<T> compute();
 
     inline string print();
 
@@ -19,8 +19,8 @@ class Ellipse : public Shape2D<T> {
 
 };
 template<class T>
-inline ShapeResultData<T> Ellipse<T>::compute() {
-  return ShapeResultData<T>();
+inline ShapeResult<T> Ellipse<T>::compute() {
+  return ShapeResult<T>();
 }
 
 template<class T>

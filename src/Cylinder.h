@@ -11,7 +11,7 @@ using namespace std;
 template<class T>
 class Cylinder : public Shape3D<T> {
   public:
-    inline virtual ShapeResultData<T> compute();
+    inline virtual ShapeResult<T> compute();
 
     inline string print();
 
@@ -19,8 +19,8 @@ class Cylinder : public Shape3D<T> {
 
 };
 template<class T>
-inline ShapeResultData<T> Cylinder<T>::compute() {
-  return ShapeResultData<T>();
+inline ShapeResult<T> Cylinder<T>::compute() {
+  return ShapeResult<T>();
 }
 
 template<class T>
