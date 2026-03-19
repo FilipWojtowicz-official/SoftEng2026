@@ -2,9 +2,9 @@
 #define _CIRCLE_H
 
 #include "Shape2D.h"
-#include "ShapeResultData.h"    
+#include "ShapeResultData.h"
 #include "ShapeParam.h"
-#include "ShapeResultIndex.h" 
+#include "ShapeResultIndex.h"
 #include <string>
 #include <sstream>
 #include <stdexcept>
@@ -60,6 +60,7 @@ template <class T> std::string Circle<T>::print()
 // Konstruktor
 template <class T>
 Circle<T>::Circle(const ShapeParam<T>& param): Shape2D<T>(param)
-{}
+{
+}
 
 #endif
