@@ -22,11 +22,20 @@ template <class T> inline ShapeResult<T> Ellipse<T>::compute()
 {
     ShapeResult<T> result;
 
-    // Używamy m_param zamiast param!
+    // Pobieramy parametry
     T a = this->m_param.get_attrib(PARAM_RADIUS);
     T b = this->m_param.get_attrib(PARAM_RADIUS_2);
 
-    T area = (T)3.141592653589 * a * b;
+    // Domyślnie ustawiamy pole na 0
+    T area = 0;
+
+    // Liczymy pole TYLKO wtedy, gdy oba promienie są dodatnie (logika
+    // geometryczna)
+    if (a > 0 && b > 0)
+    {
+        area = (T)3.141592653589 * a * b;
+    }
+
     result.set_attrib(RESULT_AREA, area);
 
     return result;
@@ -34,7 +43,6 @@ template <class T> inline ShapeResult<T> Ellipse<T>::compute()
 
 template <class T> inline string Ellipse<T>::print()
 {
-    // Tutaj też m_param
     T a = this->m_param.get_attrib(PARAM_RADIUS);
     T b = this->m_param.get_attrib(PARAM_RADIUS_2);
 

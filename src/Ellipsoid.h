@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include "ShapeParam.h"
+#include <stdexcept>
 
 using namespace std;
 
@@ -16,7 +17,6 @@ private:
 
 public:
     inline virtual ShapeResult<T> compute();
-
     inline string print();
     inline Ellipsoid(const ShapeParam<T>& param);
 };
@@ -55,6 +55,15 @@ template <class T> inline string Ellipsoid<T>::print()
 template <class T>
 inline Ellipsoid<T>::Ellipsoid(const ShapeParam<T>& param)
     : Shape3D<T>(param), localParam(param)
-{}
+{
+    T a = param.get_attrib(static_cast<ShapeParamIndex>(0));
+    T b = param.get_attrib(static_cast<ShapeParamIndex>(1));
+    T c = param.get_attrib(static_cast<ShapeParamIndex>(2));
+
+    if (a < 0 || b < 0 || c < 0)
+    {
+        throw std::invalid_argument("Wymiary elipsoidy nie moga byc ujemne!");
+    }
+}
 
 #endif

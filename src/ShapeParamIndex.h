@@ -11,6 +11,9 @@ enum ShapeParamIndex
     PARAM_DEPTH,
     PARAM_ANGLE,
     PARAM_DIAGONAL_2,
-    PARAM_RADIUS_2
+    PARAM_RADIUS_2,
+    PARAM_SIDE_A,
+    PARAM_SIDE_B,
+    PARAM_SIDE_C
 };
 #endif
