@@ -1,4 +1,5 @@
-
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <gtest/gtest.h>
 #include "ShapeFactory.h"
 
@@ -6,6 +7,7 @@ TEST(test_shape1, AddFunction)
 {
     bool res = true;
     ShapeParam<float> param;
+
     res = param.set_attrib(ShapeParamIndex::PARAM_RADIUS, 1.f);
     ASSERT_NE(res, false);
 
@@ -19,15 +21,14 @@ TEST(test_shape1, AddFunction)
     ASSERT_NE(shape, nullptr);
 
 #if 0
-    ShapeResult<float> data=shape->compute();
-    float area=data.get_attrib(ShapeResultIndex::RESULT_AREA);
+    ShapeResult<float> data = shape->compute();
+    float area = data.get_attrib(ShapeResultIndex::RESULT_AREA);
     ASSERT_NE(area, 0.f);
 #endif
 
     shape.reset(nullptr);
     ASSERT_EQ(shape.get(), nullptr);
 }
-
 
 int main(int argc, char** argv)
 {

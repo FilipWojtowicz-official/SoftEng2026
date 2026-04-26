@@ -14,21 +14,26 @@ permissions:
   pull-requests: write
 
 jobs:
+  # =========================================================================
+  # BUILD - kompilacja na Ubuntu i Windows
+  # =========================================================================
   build:
+    name: build
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: true
 
     - name: Set up CMake
-      uses: jwlawson/actions-setup-cmake@v1
+      uses: jwlawson/actions-setup-cmake@v2
       with:
         cmake-version: '3.20.0'
 
@@ -38,7 +43,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential
         sudo apt-get install -y cmake ninja-build
-                
+
     - name: Configure Windows
       if: matrix.os == 'windows-latest'
       shell: cmd
@@ -60,27 +65,80 @@ jobs:
         echo "LIB=$env:LIB" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "LIBPATH=$env:LIBPATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         echo "LIBRARY_PATH=$env:LIBRARY_PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-    
+
     - name: Configure CMake
       run: cmake -G Ninja -S . -B build
-      
+
     - name: Build
       run: cmake --build build
 
-    - name: Run tests
+    # Po udanym budowaniu na Ubuntu pakujemy katalog build/ jako artefakt,
+    # zeby kolejny job (test) mogl po nim odpalic ctest bez ponownej kompilacji.
+    # Pakujemy w tar, bo upload-artifact gubi atrybut wykonywalnosci plikow.
+    - name: Pack build directory (Ubuntu)
       if: matrix.os == 'ubuntu-latest'
-      run: ctest --test-dir build -C Debug --output-on-failure --verbose
+      run: tar -czf build-ubuntu.tar.gz build/
+
+    - name: Upload build artifact (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-ubuntu
+        path: build-ubuntu.tar.gz
+        retention-days: 1
+
+  # =========================================================================
+  # TEST - uruchomienie testow na Ubuntu (osobny job, zaleznosc od build)
+  # =========================================================================
+  test:
+    name: test
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Download build artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: build-ubuntu
+
+    - name: Unpack build directory
+      run: tar -xzf build-ubuntu.tar.gz
+
+    # Katalog na raporty XML musi istniec PRZED uruchomieniem testow,
+    # bo gtest nie tworzy go automatycznie.
+    - name: Prepare reports directory
+      run: mkdir -p build/gtest_reports
+
+    - name: Run tests
+      working-directory: build
+      run: ctest -C Debug --output-on-failure --verbose
       env:
-        GTEST_OUTPUT: "xml:../gtest_results.xml"
-      continue-on-error: true
+        # Trailing slash - to jest klucz: gtest interpretuje wartosc
+        # konczaca sie slashem jako KATALOG i tworzy w nim osobny plik
+        # XML dla kazdej binarki testowej (nazwany od targeta).
+        # Bez slasha gtest traktuje to jako PLIK i kazda binarka nadpisuje
+        # ten sam plik - byl to bug w poprzedniej wersji workflow.
+        GTEST_OUTPUT: "xml:gtest_reports/"
+
+    - name: List generated reports
+      if: always()
+      working-directory: build
+      run: ls -la gtest_reports/ || echo "No reports generated"
 
     - name: Publish Test Report
       uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always() && matrix.os == 'ubuntu-latest'
+      if: always()
       with:
-        files: "gtest_results.xml"
+        files: "build/gtest_reports/*.xml"
 
-
+  # =========================================================================
+  # FORMAT CHECK - niezalezny od build/test
+  # =========================================================================
   formatcheck:
     name: Check code format
     runs-on: ubuntu-22.04
@@ -93,4 +151,4 @@ jobs:
       - name: Give execute permission to clang_format.sh
         run: chmod +x ./clang_format.sh
       - name: Check code format
-        run: ./clang_format.sh      
+        run: ./clang_format.sh
