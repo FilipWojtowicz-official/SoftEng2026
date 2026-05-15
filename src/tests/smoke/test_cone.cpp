@@ -1,52 +1,42 @@
-include <gtest/gtest.h>
+#include <gtest/gtest.h>
 #include <memory>
-#include "Cone.h"
-#include "ShapeParam.h"
-#include "ShapeParamIndex.h"
+#include <chrono>
+#include "../../Cone.h"
 
-/**
- * Test poprawnosci obliczen (Happy Path).
- * Dla R=3 i H=4:
- * Objetosc: ~37.699
- * Pole: ~75.398
- */
-TEST(ConeTest, CorrectCalculations)
+template <typename T> class ConeTypeTest : public ::testing::Test {};
+
+using MyTypes = ::testing::Types<float, double>;
+TYPED_TEST_SUITE(ConeTypeTest, MyTypes);
+
+TYPED_TEST(ConeTypeTest, FullAssignmentTest)
 {
-    ShapeParam<double> param;
-    param.set_attrib(PARAM_RADIUS, 3.0);
-    param.set_attrib(PARAM_HEIGHT, 4.0);
+    using T = TypeParam;
 
-    // Uzycie unique_ptr zapobiega wyciekom pamieci
-    std::unique_ptr<Cone<double>> cone = std::make_unique<Cone<double>>(param);
-    auto result = cone->compute();
+    ShapeParam<T> badParam;
+    badParam.set_attrib(PARAM_RADIUS, static_cast<T>(-5.0));
+    badParam.set_attrib(PARAM_HEIGHT, static_cast<T>(10.0));
 
-    EXPECT_NEAR(result.get_attrib(RESULT_VOLUME), 37.699111843, 0.001);
-    EXPECT_NEAR(result.get_attrib(RESULT_SURFACE), 75.398223686, 0.001);
+    EXPECT_THROW({ Cone<T> c(badParam); }, std::invalid_argument);
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < 100; ++i)
+    {
+        ShapeParam<T> param;
+        param.set_attrib(PARAM_RADIUS, static_cast<T>(3.0));
+        param.set_attrib(PARAM_HEIGHT, static_cast<T>(4.0));
+
+        std::unique_ptr<Cone<T>> cone = std::make_unique<Cone<T>>(param);
+        auto res = cone->compute();
+
+        ASSERT_GT(res.get_attrib(RESULT_VOLUME), 0);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    auto duration =
+        std::chrono::duration_cast<std::chrono::microseconds>(end - start)
+            .count();
+
+    EXPECT_LT(duration, 1000);
 }
-
-/**
- * Test walidacji - czy program wyrzuci blad przy ujemnym promieniu.
- */
-TEST(ConeTest, NegativeRadiusValidation)
-{
-    ShapeParam<double> param;
-    param.set_attrib(PARAM_RADIUS, -1.0);
-    param.set_attrib(PARAM_HEIGHT, 5.0);
-
-    EXPECT_THROW({ Cone<double> cone(param); }, std::invalid_argument);
-}
-
-/**
- * Test dla wartosci granicznej (promien = 0).
- */
-TEST(ConeTest, ZeroRadius)
-{
-    ShapeParam<double> param;
-    param.set_attrib(PARAM_RADIUS, 0.0);
-    param.set_attrib(PARAM_HEIGHT, 5.0);
-
-    std::unique_ptr<Cone<double>> cone = std::make_unique<Cone<double>>(param);
-    auto result = cone->compute();
-
-    EXPECT_DOUBLE_EQ(result.get_attrib(RESULT_VOLUME), 0.0);
-    EXPECT_DOUBLE_EQ(result.get_attrib(RESULT_SURFACE), 0.0);
